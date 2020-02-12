@@ -43,8 +43,6 @@ max-args=8
 
 [SIMILARITIES]
 
-# Ignore imports when computing similarities.
-# ignore-imports=yes
 
 [TYPECHECK]
 
