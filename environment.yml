@@ -9,3 +9,4 @@ dependencies:
   - tqdm
   - jieba
   - pymorphy2
+  - pylint
