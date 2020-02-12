@@ -22,7 +22,7 @@ get_wiki: $(WIKI_PARSED_FILE)
 # Tokenize wikipedia
 $(WIKI_PARSED_FILE): $(JSON_FILE)
 	echo "Tokenize data"
-	python src/get_tokens.py --wikipedia-raw-file $(JSON_FILE) --wikipedia-tokenized-file $(WIKI_PARSED_FILE) --dump-size 10000
+	python src/get_tokens.py --wikipedia-raw-file $(JSON_FILE) --wikipedia-tokenized-file $(WIKI_PARSED_FILE) --language $(LANGUAGE) --dump-size 10000
 
 # Preprocess wikipedia to json
 $(JSON_FILE): $(XML_FILE)

@@ -1,13 +1,13 @@
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
-import logging
 import json
 import argparse
 import spacy
 from tqdm import tqdm
 import gensim.utils
 
+from tokenizer import Tokenizer
 
-logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s', level=logging.INFO)
+
 parser = argparse.ArgumentParser()
 # Wikipedia
 parser.add_argument(
@@ -24,15 +24,14 @@ parser.add_argument(
     help="The maximum number of articles to be processed")
 # Model
 parser.add_argument(
-    "--spacy", default='xx_ent_wiki_sm', required=False,
-    help="The name of the spaCy language model (default is multilingual)")
+    "--language", type=str, required=True,
+    help="The wikipedia language to get tokenizer.")
 
 
-def load_spacy(spacy_option):
-    logging.info("Loading spaCy model")
-    nlp = spacy.load(spacy_option)
-    spacy_tokenizer = nlp.Defaults.create_tokenizer(nlp)
-    return spacy_tokenizer
+def get_tokenizer(language):
+    print("Loading tokenizer")
+    tokenizer = Tokenizer(language)
+    return tokenizer
 
 
 def get_paragraphs(sections):
@@ -94,11 +93,9 @@ def get_n_articles(src_fname, max_articles=None):
 
 def tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer,
                        dump_size, max_articles):
-    logging.info('Getting wikipedia number of articles')
     n_articles = get_n_articles(src_fname, max_articles=max_articles)
     processed_articles = []
 
-    logging.info('Preprocessing wikipedia')
     with gensim.utils.open(src_fname, 'rb') as f:
         for article_id, article in tqdm(enumerate(f), total=n_articles, desc='Tokenizing wikipedia', mininterval=.2):
             processed_article = process_article(article, spacy_tokenizer)
@@ -116,18 +113,18 @@ def tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer,
         write_txt(tgt_fname, processed_articles)
 
 
-def process(src_fname, tgt_fname, spacy_option, dump_size, max_articles):
-    spacy_tokenizer = load_spacy(spacy_option)
+def process(src_fname, tgt_fname, language, dump_size, max_articles):
+    spacy_tokenizer = get_tokenizer(language)
 
     tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer, dump_size, max_articles)
-    logging.info("Completed %s, dumped to %s", src_fname, tgt_fname)
+    print("Completed %s, dumped to %s", src_fname, tgt_fname)
 
 
 def main():
     args = parser.parse_args()
-    logging.info(args)
+    print(args)
 
-    process(args.wikipedia_raw_file, args.wikipedia_tokenized_file, args.spacy, args.dump_size, args.max_articles)
+    process(args.wikipedia_raw_file, args.wikipedia_tokenized_file, args.language, args.dump_size, args.max_articles)
 
 
 if __name__ == '__main__':
