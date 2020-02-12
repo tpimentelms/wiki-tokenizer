@@ -1,31 +1,33 @@
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
 import json
 import argparse
-import spacy
 from tqdm import tqdm
 import gensim.utils
 
 from tokenizer import Tokenizer
 
 
-parser = argparse.ArgumentParser()
-# Wikipedia
-parser.add_argument(
-    "--wikipedia-raw-file", type=str,
-    help="The file containing the wiki json files from which to read")
-parser.add_argument(
-    "--wikipedia-tokenized-file", type=str,
-    help="The file in which wikipedia tokenized results should be")
-parser.add_argument(
-    "--dump-size", type=int, default=1000, required=False,
-    help="The number of articles to be processed between each dump")
-parser.add_argument(
-    "--max-articles", type=int, default=None, required=False,
-    help="The maximum number of articles to be processed")
-# Model
-parser.add_argument(
-    "--language", type=str, required=True,
-    help="The wikipedia language to get tokenizer.")
+def get_args():
+    parser = argparse.ArgumentParser()
+    # Wikipedia
+    parser.add_argument(
+        "--wikipedia-raw-file", type=str,
+        help="The file containing the wiki json files from which to read")
+    parser.add_argument(
+        "--wikipedia-tokenized-file", type=str,
+        help="The file in which wikipedia tokenized results should be")
+    parser.add_argument(
+        "--dump-size", type=int, default=1000, required=False,
+        help="The number of articles to be processed between each dump")
+    parser.add_argument(
+        "--max-articles", type=int, default=None, required=False,
+        help="The maximum number of articles to be processed")
+    # Model
+    parser.add_argument(
+        "--language", type=str, required=True,
+        help="The wikipedia language to get tokenizer.")
+
+    return parser.parse_args()
 
 
 def get_tokenizer(language):
@@ -62,8 +64,7 @@ def process_sentences(sentences, spacy_tokenizer):
 
     if len(parsed_sentences) > 10:
         return ' '.join(parsed_sentences)
-    else:
-        return None
+    return None
 
 
 def process_article(article, spacy_tokenizer):
@@ -97,7 +98,8 @@ def tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer,
     processed_articles = []
 
     with gensim.utils.open(src_fname, 'rb') as f:
-        for article_id, article in tqdm(enumerate(f), total=n_articles, desc='Tokenizing wikipedia', mininterval=.2):
+        for article_id, article in tqdm(enumerate(f), total=n_articles,
+                                        desc='Tokenizing wikipedia', mininterval=.2):
             processed_article = process_article(article, spacy_tokenizer)
             if processed_article is not None:
                 processed_articles += [processed_article]
@@ -121,10 +123,11 @@ def process(src_fname, tgt_fname, language, dump_size, max_articles):
 
 
 def main():
-    args = parser.parse_args()
+    args = get_args()
     print(args)
 
-    process(args.wikipedia_raw_file, args.wikipedia_tokenized_file, args.language, args.dump_size, args.max_articles)
+    process(args.wikipedia_raw_file, args.wikipedia_tokenized_file, args.language,
+            args.dump_size, args.max_articles)
 
 
 if __name__ == '__main__':
