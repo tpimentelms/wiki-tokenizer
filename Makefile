@@ -1,7 +1,6 @@
 # Makes programs, downloads sample data, trains a GloVe model, and then evaluates it.
 LANGUAGE := yo
 DATA_DIR :=  data
-RESULTS_DIR :=  results
 
 DATA_DIR_LANG := $(DATA_DIR)/$(LANGUAGE)
 
