@@ -1,4 +1,5 @@
 # wiki-tokenizer
+
 Code to download and tokenize wikipedia data.
 
 ## Install
@@ -8,10 +9,20 @@ To install dependencies run:
 $ conda env create -f environment.yml
 ```
 
-# Running Code
+#### Dependencies
 
-To tokenize a specific language run:
+Wiki tokenizer has the following main requirements:
+
+* [SpacY](https://spacy.io/)
+* [Gensim](https://radimrehurek.com/gensim/)
+
+### Usage
+
+To download and tokenize wikipedia data for a specific language do:
 ```bash
-$ make LANGUAGE=<language-code>
+$ make LANGUAGE=<wikipedia-language-code>
 ```
-The Makefile will automatically download that wikipedia and tokenize it.
+Where `<wikipedia-language-code>` is the language code in wikipedia for the desired language. To tokenize Afrikaans data, for example, run:
+```bash
+$ make LANGUAGE=af
+```
