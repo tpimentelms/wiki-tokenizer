@@ -1,18 +1,19 @@
 # Makes programs, downloads sample data, trains a GloVe model, and then evaluates it.
-LANGUAGE := yo
-DATA_DIR :=  data
-RESULTS_DIR :=  results
+LANGUAGE := af
+INPUT_DIR := input
+OUTPUT_DIR := output
 
-DATA_DIR_LANG := $(DATA_DIR)/$(LANGUAGE)
+INPUT_DIR_LANG := $(INPUT_DIR)/$(LANGUAGE)
+OUTPUT_DIR_LANG := $(OUTPUT_DIR)/$(LANGUAGE)
 
 XML_NAME := $(LANGUAGE)wiki-latest-pages-articles.xml.bz2
 WIKIURL := https://dumps.wikimedia.org/$(LANGUAGE)wiki/latest/$(XML_NAME)
 JSON_NAME := wiki-latest.json.gz
 
 # Data Files
-XML_FILE := $(DATA_DIR_LANG)/$(XML_NAME)
-JSON_FILE := $(DATA_DIR_LANG)/$(JSON_NAME)
-WIKI_PARSED_FILE := $(DATA_DIR_LANG)/parsed.txt
+XML_FILE := $(INPUT_DIR_LANG)/$(XML_NAME)
+JSON_FILE := $(INPUT_DIR_LANG)/$(JSON_NAME)
+WIKI_PARSED_FILE := $(OUTPUT_DIR_LANG)/parsed.txt
 
 
 all: get_wiki
@@ -22,6 +23,7 @@ get_wiki: $(WIKI_PARSED_FILE)
 # Tokenize wikipedia
 $(WIKI_PARSED_FILE): $(JSON_FILE)
 	echo "Tokenize data"
+	mkdir -p $(OUTPUT_DIR_LANG)
 	python src/get_tokens.py --wikipedia-raw-file $(JSON_FILE) --wikipedia-tokenized-file $(WIKI_PARSED_FILE) --language $(LANGUAGE) --dump-size 10000
 
 # Preprocess wikipedia to json
@@ -32,5 +34,5 @@ $(JSON_FILE): $(XML_FILE)
 # Get wikipedia
 $(XML_FILE):
 	echo "Get data"
-	mkdir -p $(DATA_DIR_LANG)
-	wget -P $(DATA_DIR_LANG) $(WIKIURL)
+	mkdir -p $(INPUT_DIR_LANG)
+	wget -P $(INPUT_DIR_LANG) $(WIKIURL)

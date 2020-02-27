@@ -4,7 +4,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.7
-  - spacy=2.2
+  - spacy>=2.2
   - gensim
   - tqdm
   - jieba
