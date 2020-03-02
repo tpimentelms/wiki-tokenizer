@@ -20,6 +20,8 @@ all: get_wiki
 
 get_wiki: $(WIKI_PARSED_FILE)
 
+get_raw: $(XML_FILE)
+
 # Tokenize wikipedia
 $(WIKI_PARSED_FILE): $(JSON_FILE)
 	echo "Tokenize data"
