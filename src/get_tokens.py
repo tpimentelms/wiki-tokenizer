@@ -5,6 +5,7 @@ from tqdm import tqdm
 import gensim.utils
 
 from tokenizer import Tokenizer
+from sentencizer import Sentencizer
 
 
 def get_args():
@@ -30,6 +31,12 @@ def get_args():
     return parser.parse_args()
 
 
+def get_sentencizer(language):
+    print("Loading sentencizer")
+    sentencizer = Sentencizer(language)
+    return sentencizer
+
+
 def get_tokenizer(language):
     print("Loading tokenizer")
     tokenizer = Tokenizer(language)
@@ -39,20 +46,22 @@ def get_tokenizer(language):
 def get_paragraphs(sections):
     paragraphs = [paragraph
                   for section in sections
-                  for paragraph in list(filter(None, section.split('\n')))]
-    paragraphs = '. '.join(paragraphs)
-    paragraphs = paragraphs.replace('\'', '')
+                  for paragraph in list(filter(None, section.split('\n')))
+                  if paragraph.strip() != '']
+    paragraphs = [x.replace('\'', '') for x in paragraphs]
     return paragraphs
 
 
-def get_sentences(article):
+def get_sentences(article, spacy_sentencizer):
     sections = article.get('section_texts')
     paragraphs = get_paragraphs(sections)
-    return list(filter(None, paragraphs.split('.')))
+    sentences = [sentence for x in paragraphs for sentence in spacy_sentencizer(x)]
+    return [x for x in sentences if x.strip() != '']
 
 
 def tokenize_sentence(spacy_tokenizer, sentence):
-    return [x.text for x in spacy_tokenizer(sentence.strip())]
+    tokens = [x.text for x in spacy_tokenizer(sentence.strip())]
+    return [x for x in tokens if x.strip() != '']
 
 
 def process_sentences(sentences, spacy_tokenizer):
@@ -63,13 +72,13 @@ def process_sentences(sentences, spacy_tokenizer):
             parsed_sentences += [' '.join(target_tokens)]
 
     if len(parsed_sentences) > 10:
-        return ' '.join(parsed_sentences)
+        return '\n'.join(parsed_sentences)
     return None
 
 
-def process_article(article, spacy_tokenizer):
+def process_article(article, spacy_sentencizer, spacy_tokenizer):
     article = json.loads(article)
-    sentences = get_sentences(article)
+    sentences = get_sentences(article, spacy_sentencizer)
     parsed = process_sentences(sentences, spacy_tokenizer)
     return parsed
 
@@ -92,7 +101,7 @@ def get_n_articles(src_fname, max_articles=None):
     return n_articles
 
 
-def tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer,
+def tokenize_wikipedia(src_fname, tgt_fname, spacy_sentencizer, spacy_tokenizer,
                        dump_size, max_articles):
     n_articles = get_n_articles(src_fname, max_articles=max_articles)
     processed_articles = []
@@ -100,7 +109,7 @@ def tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer,
     with gensim.utils.open(src_fname, 'rb') as f:
         for article_id, article in tqdm(enumerate(f), total=n_articles,
                                         desc='Tokenizing wikipedia', mininterval=.2):
-            processed_article = process_article(article, spacy_tokenizer)
+            processed_article = process_article(article, spacy_sentencizer, spacy_tokenizer)
             if processed_article is not None:
                 processed_articles += [processed_article]
 
@@ -116,9 +125,11 @@ def tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer,
 
 
 def process(src_fname, tgt_fname, language, dump_size, max_articles):
+    spacy_sentencizer = get_sentencizer(language)
     spacy_tokenizer = get_tokenizer(language)
 
-    tokenize_wikipedia(src_fname, tgt_fname, spacy_tokenizer, dump_size, max_articles)
+    tokenize_wikipedia(src_fname, tgt_fname, spacy_sentencizer, spacy_tokenizer,
+                       dump_size, max_articles)
     print("Completed %s, dumped to %s", src_fname, tgt_fname)
 
 
