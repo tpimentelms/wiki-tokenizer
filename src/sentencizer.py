@@ -16,4 +16,3 @@ class Sentencizer:
 
     def __call__(self, *args, **kwargs):
         return [x.text for x in self.sentencizer(*args, **kwargs).sents]
-
