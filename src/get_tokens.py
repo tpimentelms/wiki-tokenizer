@@ -52,7 +52,8 @@ def get_sentences(article):
 
 
 def tokenize_sentence(spacy_tokenizer, sentence):
-    return [x.text for x in spacy_tokenizer(sentence.strip())]
+    tokens = [x.text for x in spacy_tokenizer(sentence.strip())]
+    return [x for x in tokens if x.strip() != '']
 
 
 def process_sentences(sentences, spacy_tokenizer):
