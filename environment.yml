@@ -10,3 +10,6 @@ dependencies:
   - jieba
   - pymorphy2
   - pylint
+  - pip
+  - pip:
+    - pymorphy2-dicts
