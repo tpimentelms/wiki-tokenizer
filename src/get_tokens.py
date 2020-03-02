@@ -63,7 +63,7 @@ def process_sentences(sentences, spacy_tokenizer):
             parsed_sentences += [' '.join(target_tokens)]
 
     if len(parsed_sentences) > 10:
-        return ' '.join(parsed_sentences)
+        return '\n'.join(parsed_sentences)
     return None
 
 
