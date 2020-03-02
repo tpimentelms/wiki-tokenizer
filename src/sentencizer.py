@@ -10,7 +10,6 @@ class Sentencizer:
     @classmethod
     def get_sentencizer(cls, language):
         nlp = spacy.blank(language)
-        # spacy_tokenizer = nlp.Defaults.create_tokenizer(nlp)
         nlp.add_pipe(nlp.create_pipe('sentencizer'))
         return nlp
 
