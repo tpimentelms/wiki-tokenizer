@@ -13,3 +13,5 @@ dependencies:
   - pip
   - pip:
     - pymorphy2-dicts
+    - pythainlp
+    - pyvi
