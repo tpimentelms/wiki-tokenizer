@@ -12,8 +12,17 @@ class Sentencizer:
         self.sentencizer = self.get_sentencizer(self.spacy_language)
 
     @classmethod
+    def get_spacy_nlp(cls, language):
+        try:
+            return spacy.blank(language)
+        except ImportError:
+            # If language unavailable, use multilingual one
+            print('Warning: Using multilingual sentencizer')
+            return spacy.blank('xx')
+
+    @classmethod
     def get_sentencizer(cls, language):
-        nlp = spacy.blank(language)
+        nlp = cls.get_spacy_nlp(language)
         nlp.add_pipe(nlp.create_pipe('sentencizer'))
         return nlp
 
