@@ -1,5 +1,5 @@
+from abc import ABC, abstractmethod
 import spacy
-from abc import ABC, abstractmethod, abstractclassmethod
 
 
 class SpacyBase(ABC):
