@@ -17,7 +17,7 @@ class Sentencizer:
             return spacy.blank(language)
         except ImportError:
             # If language unavailable, use multilingual one
-            print('Warning: Using multilingual sentencizer')
+            print('Warning: Using multilingual spaCy sentencizer')
             return spacy.blank('xx')
 
     @classmethod

@@ -17,7 +17,7 @@ class Tokenizer:
             return spacy.blank(language)
         except ImportError:
             # If language unavailable, use multilingual one
-            print('Warning: Using multilingual spaCy model')
+            print('Warning: Using multilingual spaCy tokenizer')
             return spacy.blank('xx')
 
     @classmethod
