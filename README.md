@@ -1,5 +1,7 @@
 # wiki-tokenizer
 
+[![CircleCI](https://circleci.com/gh/tpimentelms/wiki-tokenizer.svg?style=svg)](https://circleci.com/gh/tpimentelms/wiki-tokenizer)
+
 Code to download and tokenize wikipedia data.
 
 ## Install
