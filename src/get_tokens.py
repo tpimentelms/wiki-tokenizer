@@ -48,7 +48,7 @@ def get_paragraphs(sections):
                   for paragraph in list(filter(None, section.split('\n')))
                   if paragraph.strip() != '']
     paragraphs = [x.replace('\'', '') for x in paragraphs]
-    return paragraphs
+    return [x for x in paragraphs if x.strip() != '']
 
 
 def get_sentences(article, spacy_sentencizer):
