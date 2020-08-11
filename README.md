@@ -28,3 +28,5 @@ Where `<wikipedia-language-code>` is the language code in wikipedia for the desi
 ```bash
 $ make LANGUAGE=af
 ```
+
+To fallback to multilingual tokenizer / sentencizer models, set `MULTILINGUAL=True` when calling the Makefile.
