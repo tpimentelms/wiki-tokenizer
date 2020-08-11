@@ -26,19 +26,23 @@ def get_args():
     parser.add_argument(
         "--language", type=str, required=True,
         help="The wikipedia language to get tokenizer.")
+    parser.add_argument(
+        "--allow-multilingual", action='store_true',
+        help="Fallback to multilingual sentencizer / tokenizer" +
+        "if language specific is not available.")
 
     return parser.parse_args()
 
 
-def get_sentencizer(language):
+def get_sentencizer(language, allow_multilingual=False):
     print("Loading sentencizer")
-    sentencizer = Sentencizer(language)
+    sentencizer = Sentencizer(language, allow_multilingual)
     return sentencizer
 
 
-def get_tokenizer(language):
+def get_tokenizer(language, allow_multilingual=False):
     print("Loading tokenizer")
-    tokenizer = Tokenizer(language)
+    tokenizer = Tokenizer(language, allow_multilingual)
     return tokenizer
 
 
@@ -123,9 +127,9 @@ def tokenize_wikipedia(src_fname, tgt_fname, spacy_sentencizer, spacy_tokenizer,
         write_txt(tgt_fname, processed_articles)
 
 
-def process(src_fname, tgt_fname, language, dump_size, max_articles):
-    spacy_sentencizer = get_sentencizer(language)
-    spacy_tokenizer = get_tokenizer(language)
+def process(src_fname, tgt_fname, language, dump_size, max_articles, allow_multilingual):
+    spacy_sentencizer = get_sentencizer(language, allow_multilingual)
+    spacy_tokenizer = get_tokenizer(language, allow_multilingual)
 
     tokenize_wikipedia(src_fname, tgt_fname, spacy_sentencizer, spacy_tokenizer,
                        dump_size, max_articles)
@@ -137,7 +141,7 @@ def main():
     print(args)
 
     process(args.wikipedia_raw_file, args.wikipedia_tokenized_file, args.language,
-            args.dump_size, args.max_articles)
+            args.dump_size, args.max_articles, args.allow_multilingual)
 
 
 if __name__ == '__main__':
