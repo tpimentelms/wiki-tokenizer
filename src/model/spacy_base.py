@@ -15,15 +15,17 @@ class SpacyBase(ABC):
 
     def get_spacy_nlp(self, language):
         try:
-            return spacy.blank(language)
+            model = spacy.blank(language)
         except ImportError:
             if self.allow_multilingual:
-                return self.get_spacy_multilingual()
+                model = self.get_spacy_multilingual()
             else:
                 error_msg = (
                     'Language code unavailable: %s. Use --allow-multilingual ' +
                     'argument to fallback to multilingual models.') % language
                 raise ValueError(error_msg)
+
+        return model
 
     @classmethod
     def get_spacy_multilingual(cls):
