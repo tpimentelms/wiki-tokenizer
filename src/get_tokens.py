@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
 import json
 import argparse
