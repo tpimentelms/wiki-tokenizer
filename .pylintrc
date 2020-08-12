@@ -16,7 +16,8 @@ disable=missing-function-docstring,
         missing-module-docstring,
         missing-class-docstring,
         wrong-import-position,
-        attribute-defined-outside-init
+        attribute-defined-outside-init,
+        import-error
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
