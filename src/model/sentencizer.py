@@ -1,4 +1,4 @@
-# import spacy
+# -*- coding: utf-8 -*-
 from .spacy_base import SpacyBase
 
 
