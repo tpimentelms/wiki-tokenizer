@@ -3,6 +3,7 @@ from .spacy_base import SpacyBase
 
 
 class Sentencizer(SpacyBase):
+    MAX_LEN = 1000000
 
     def get_model(self, language):
         nlp = self.get_spacy_nlp(language)

@@ -7,8 +7,6 @@ import gensim.utils
 
 from model import Tokenizer, Sentencizer
 
-SENTENCIZER_MAX_LEN = 1000000
-
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -55,7 +53,7 @@ def get_paragraphs(sections):
                   for paragraph in list(filter(None, section.split('\n')))
                   if paragraph.strip() != '']
     paragraphs = [x.replace('\'', '') for x in paragraphs]
-    return [x for x in paragraphs if x.strip() != '' and len(x) < SENTENCIZER_MAX_LEN]
+    return [x for x in paragraphs if x.strip() != '' and len(x) < Sentencizer.MAX_LEN]
 
 
 def get_sentences(article, spacy_sentencizer):
