@@ -64,9 +64,6 @@ def remove_headers(sections):
 
 
 def get_paragraphs(sections):
-    # re.sub('[^\n]* .*?\n', '\n', sections)
-    # print('\n\n'.join(sections))
-    # import ipdb; ipdb.set_trace()
     sections = remove_lists(sections)
     sections = remove_headers(sections)
     paragraphs = [paragraph
@@ -76,24 +73,11 @@ def get_paragraphs(sections):
     paragraphs = [x.replace('\'', '').replace('\n', ' ') for x in paragraphs]
     return [x for x in paragraphs if x.strip() != '' and len(x) < Sentencizer.MAX_LEN]
 
-# import xml.etree.ElementTree as ET
-# import bz2
-
-# all_text, page = [], []
-# with bz2.open('input/pt/ptwiki-latest-pages-articles.xml.bz2', 'r') as f:
-#     for x in f:
-#         page += [x.decode()]
-#         if b'</page>' in x:
-#             all_text += ['\n'.join(page)]
-#             page = []
-#         if len(all_text) > 5 or len(page) > 1000:
-#             break
-
 
 def get_sentences(article, spacy_sentencizer):
     sections = article.get('section_texts')
-    # import ipdb; ipdb.set_trace()
     paragraphs = get_paragraphs(sections)
+    # import ipdb; ipdb.set_trace()
     sentences = [sentence for x in paragraphs for sentence in spacy_sentencizer(x)]
     return [x for x in sentences if x.strip() != '']
 
