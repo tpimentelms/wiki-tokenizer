@@ -7,6 +7,8 @@ import gensim.utils
 
 from model import Tokenizer, Sentencizer
 
+SKIPPED_ARTICLES, USED_ARTICLEs = 0, 0
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -69,6 +71,8 @@ def tokenize_sentence(spacy_tokenizer, sentence):
 
 
 def process_sentences(sentences, spacy_tokenizer):
+    global SKIPPED_ARTICLES, USED_ARTICLEs
+
     parsed_sentences = []
     for sentence in sentences:
         target_tokens = tokenize_sentence(spacy_tokenizer, sentence)
@@ -76,7 +80,10 @@ def process_sentences(sentences, spacy_tokenizer):
             parsed_sentences += [' '.join(target_tokens)]
 
     if len(parsed_sentences) > 10:
+        USED_ARTICLEs += 1
         return '\n'.join(parsed_sentences)
+
+    SKIPPED_ARTICLES += 1
     return None
 
 
@@ -88,7 +95,8 @@ def process_article(article, spacy_sentencizer, spacy_tokenizer):
 
 
 def write_txt(fname, data):
-    tqdm.write('Saving dump')
+    tqdm.write('Saving dump. Stats: Used %d, Skipped %d' %
+               (USED_ARTICLEs, SKIPPED_ARTICLES))
     with open(fname, 'a') as f:
         for item in data:
             f.write("%s\n" % item)

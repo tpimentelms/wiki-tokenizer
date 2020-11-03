@@ -3,6 +3,7 @@ LANGUAGE := af
 INPUT_DIR := input
 OUTPUT_DIR := output
 MULTILINGUAL := False
+DUMP_SIZE := 10000
 
 MULTILINGUAL_ARG := $(if $(filter-out $(MULTILINGUAL), False),--allow-multilingual,)
 
@@ -29,7 +30,8 @@ get_raw: $(XML_FILE)
 $(WIKI_PARSED_FILE): $(JSON_FILE)
 	echo "Tokenize data"
 	mkdir -p $(OUTPUT_DIR_LANG)
-	python src/get_tokens.py --wikipedia-raw-file $(JSON_FILE) --wikipedia-tokenized-file $(WIKI_PARSED_FILE) --language $(LANGUAGE) --dump-size 10000 $(MULTILINGUAL_ARG)
+	python src/get_tokens.py --wikipedia-raw-file $(JSON_FILE) --wikipedia-tokenized-file $(WIKI_PARSED_FILE) \
+		--language $(LANGUAGE) --dump-size $(DUMP_SIZE) $(MULTILINGUAL_ARG)
 
 # Preprocess wikipedia to json
 $(JSON_FILE): $(XML_FILE)
