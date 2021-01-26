@@ -56,6 +56,7 @@ def remove_regex(regex, sections):
 
 
 def remove_lists(sections):
+    sections = remove_regex('(?m)^\* .*\n', sections)
     return remove_regex('(?m)^\* .+\n?', sections)
 
 
@@ -77,33 +78,34 @@ def get_paragraphs(sections):
 def get_sentences(article, spacy_sentencizer):
     sections = article.get('section_texts')
     paragraphs = get_paragraphs(sections)
-    # import ipdb; ipdb.set_trace()
-    sentences = [sentence for x in paragraphs for sentence in spacy_sentencizer(x)]
-    return [x for x in sentences if x.strip() != '']
+    # sentences = [sentence for x in paragraphs for sentence in spacy_sentencizer(x)]
+    # Drop short paragraphs
+    paragraphs = [x.strip() for x in paragraphs if len(x.strip().split(' ')) > 10]
+    return ' '.join(paragraphs)
 
 
-def tokenize_sentence(spacy_tokenizer, sentence):
-    tokens = [x.text for x in spacy_tokenizer(sentence.strip())]
-    return [x for x in tokens if x.strip() != '']
+# def tokenize_sentence(spacy_tokenizer, sentence):
+#     tokens = [x.text for x in spacy_tokenizer(sentence.strip())]
+#     return [x for x in tokens if x.strip() != '']
 
 
-def process_sentences(sentences, spacy_tokenizer):
-    parsed_sentences = []
-    for sentence in sentences:
-        target_tokens = tokenize_sentence(spacy_tokenizer, sentence)
-        if len(target_tokens) > 1:
-            parsed_sentences += [' '.join(target_tokens)]
+# def process_sentences(sentences, spacy_tokenizer):
+#     parsed_sentences = []
+#     for sentence in sentences:
+#         target_tokens = tokenize_sentence(spacy_tokenizer, sentence)
+#         if len(target_tokens) > 1:
+#             parsed_sentences += [' '.join(target_tokens)]
 
-    if len(parsed_sentences) > 10:
-        return '\n'.join(parsed_sentences)
-    return None
+#     if len(parsed_sentences) > 10:
+#         return '\n'.join(parsed_sentences)
+#     return None
 
 
 def process_article(article, spacy_sentencizer, spacy_tokenizer):
     article = json.loads(article)
     sentences = get_sentences(article, spacy_sentencizer)
-    parsed = process_sentences(sentences, spacy_tokenizer)
-    return parsed
+    # parsed = process_sentences(sentences, spacy_tokenizer)
+    return sentences
 
 
 def write_txt(fname, data):
