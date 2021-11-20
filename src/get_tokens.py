@@ -2,9 +2,9 @@
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
 import json
 import argparse
+import re
 from tqdm import tqdm
 import gensim.utils
-import re
 
 from model import Tokenizer, Sentencizer
 
@@ -56,11 +56,11 @@ def remove_regex(regex, sections):
 
 
 def remove_lists(sections):
-    return remove_regex('(?m)^\* .+\n?', sections)
+    return remove_regex(r'(?m)^\* .+\n?', sections)
 
 
 def remove_headers(sections):
-    return remove_regex('(?m)^===.+===\n?', sections)
+    return remove_regex(r'(?m)^===.+===\n?', sections)
 
 
 def get_paragraphs(sections):
@@ -77,7 +77,6 @@ def get_paragraphs(sections):
 def get_sentences(article, spacy_sentencizer):
     sections = article.get('section_texts')
     paragraphs = get_paragraphs(sections)
-    # import ipdb; ipdb.set_trace()
     sentences = [sentence for x in paragraphs for sentence in spacy_sentencizer(x)]
     return [x for x in sentences if x.strip() != '']
 
