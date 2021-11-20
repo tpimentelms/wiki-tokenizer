@@ -2,6 +2,7 @@
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
 import json
 import argparse
+import re
 from tqdm import tqdm
 import gensim.utils
 
@@ -49,12 +50,29 @@ def get_tokenizer(language, allow_multilingual=False):
     return tokenizer
 
 
+def remove_regex(regex, sections):
+    return [
+        re.sub(regex, '\n', section)
+        for section in sections
+    ]
+
+
+def remove_lists(sections):
+    return remove_regex(r'(?m)^\* .+\n?', sections)
+
+
+def remove_headers(sections):
+    return remove_regex(r'(?m)^===.+===\n?', sections)
+
+
 def get_paragraphs(sections):
+    sections = remove_lists(sections)
+    sections = remove_headers(sections)
     paragraphs = [paragraph
                   for section in sections
-                  for paragraph in list(filter(None, section.split('\n')))
+                  for paragraph in list(filter(None, section.split('\n\n')))
                   if paragraph.strip() != '']
-    paragraphs = [x.replace('\'', '') for x in paragraphs]
+    paragraphs = [x.replace('\'', '').replace('\n', ' ') for x in paragraphs]
     return [x for x in paragraphs if x.strip() != '' and len(x) < Sentencizer.MAX_LEN]
 
 
