@@ -29,7 +29,6 @@ def get_args():
         "--language", type=str, required=True,
         help="The wikipedia language to get tokenizer.")
     parser.add_argument("--batch-size", type=int, default=1024)
-    # parser.add_argument("--data_dir", help="path to save data files to")
 
     return parser.parse_args()
 
@@ -44,7 +43,6 @@ def process_batch(batch, sentencizer, tokenizer, pbar):
 
         token_lists = [tokenize_sentence(tokenizer, sentence) for sentence in sentences_raw]
         sentences = '\n'.join(' '.join(sentence) for sentence in token_lists)
-        # import ipdb; ipdb.set_trace()
 
         processed_articles += [sentences]
         pbar.update(1)
@@ -53,7 +51,6 @@ def process_batch(batch, sentencizer, tokenizer, pbar):
 
 
 def process_tf_dataset(ds, ds_size, tgt_fname, sentencizer, tokenizer):
-    # import ipdb; ipdb.set_trace()
     with tqdm(total=ds_size, desc='Getting wiki40b dataset', mininterval=1) as pbar:
         for batch in ds.as_numpy_iterator():
             processed_articles = process_batch(batch, sentencizer, tokenizer, pbar)
