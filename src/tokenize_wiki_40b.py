@@ -38,8 +38,12 @@ def process_batch(batch, sentencizer, tokenizer, pbar):
     for item in batch.get("text"):
         text = item.decode("UTF-8")
         text_clean = re.sub(ARTICLE_REGEX, "\n", text)
-        paragraphs = [paragraph for paragraph in text_clean.split('\n') if paragraph != '']
-        sentences_raw = [sentence for paragraph in paragraphs for sentence in sentencizer(paragraph)]
+        paragraphs = [paragraph for paragraph in text_clean.split('\n') if paragraph.strip() != '']
+        sentences_raw = [
+            sentence
+            for paragraph in paragraphs
+            for sentence in sentencizer(paragraph) if sentence.strip() != ''
+        ]
 
         token_lists = [tokenize_sentence(tokenizer, sentence) for sentence in sentences_raw]
         sentences = '\n'.join(' '.join(sentence) for sentence in token_lists)
