@@ -16,3 +16,5 @@ dependencies:
     - pythainlp
     - pyvi
     - mecab-python3
+    - tensorflow
+    - tensorflow_datasets
