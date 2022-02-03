@@ -15,10 +15,10 @@ def get_args():
     parser = argparse.ArgumentParser()
     # Wikipedia
     parser.add_argument(
-        "--wikipedia-raw-file", type=str,
+        "--raw-file", type=str,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
-        "--wikipedia-tokenized-file", type=str,
+        "--tokenized-file", type=str,
         help="The file in which wikipedia tokenized results should be")
     parser.add_argument(
         "--dump-size", type=int, default=1000, required=False,
