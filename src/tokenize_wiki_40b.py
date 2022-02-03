@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import re
 import math
@@ -5,16 +6,7 @@ from tqdm import tqdm
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-# from model import sentencizer, tokenizer
 from tokenize_wiki_latest import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
-
-# import ipdb; ipdb.set_trace()
-
-# # Construct a tf.data.Dataset
-# ds = tfds.load('wiki40b/nl', split='train', shuffle_files=True)
-# # Turn to a numpy df so that we can easily extract text
-# numpy_items = tfds.as_numpy(ds)
-# numpy_items['text']
 
 r1 = "_START_ARTICLE_\n[^_]*"
 r2 = "_START_PARAGRAPH_\n"
