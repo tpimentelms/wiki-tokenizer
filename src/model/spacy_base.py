@@ -6,6 +6,7 @@ import spacy
 class SpacyBase(ABC):
     spacy_dict = {
         'no': 'nb',  # Norwegian (Bokmål) has a different code in spacy
+        'simple': 'en',  # Simple English wikipedia uses English models
     }
 
     def __init__(self, language, allow_multilingual=False):
