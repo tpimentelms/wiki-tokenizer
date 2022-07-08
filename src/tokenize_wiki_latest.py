@@ -114,11 +114,10 @@ def process_article(article, spacy_sentencizer, spacy_tokenizer):
 
 
 def write_txt(fname, data):
-    tqdm.write('Saving dump. Stats: Used %d, Skipped %d' %
-               (USED_ARTICLES, SKIPPED_ARTICLES))
-    with open(fname, 'a') as f:
+    tqdm.write(f'Saving dump. Stats: Used {USED_ARTICLES}, Skipped {SKIPPED_ARTICLES}')
+    with open(fname, 'a', encoding='utf-8') as f:
         for item in data:
-            f.write("%s\n" % item)
+            f.write(f"{item}\n")
 
 
 def get_n_articles(src_fname, max_articles=None):
