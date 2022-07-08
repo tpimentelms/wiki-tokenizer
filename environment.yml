@@ -3,13 +3,13 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python=3.7
-  - spacy>=2.2
+  - python = 3.9
+  - spacy >= 2.2
   - gensim
   - tqdm
   - jieba
   - pymorphy2
-  - pylint
+  - pylint >= 2.14.4
   - pip
   - pip:
     - pymorphy2-dicts
