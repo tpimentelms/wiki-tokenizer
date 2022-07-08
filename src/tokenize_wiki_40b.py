@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 import argparse
 import re
-import math
 from tqdm import tqdm
-import tensorflow as tf
 import tensorflow_datasets as tfds
 
 from tokenize_wiki_latest import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
 
-r1 = "_START_ARTICLE_\n[^_]*"
-r2 = "_START_PARAGRAPH_\n"
-r3 = "_START_SECTION_\n[^_]*"
-r4 = "_NEWLINE_"
+REGEX_1 = "_START_ARTICLE_\n[^_]*"
+REGEX_2 = "_START_PARAGRAPH_\n"
+REGEX_3 = "_START_SECTION_\n[^_]*"
+REGEX_4 = "_NEWLINE_"
 
-ARTICLE_REGEX = re.compile(f"({r1}|{r2}|{r3}|{r4})")
+ARTICLE_REGEX = re.compile(f"({REGEX_1}|{REGEX_2}|{REGEX_3}|{REGEX_4})")
 
 
 def get_args():
@@ -54,9 +52,9 @@ def process_batch(batch, sentencizer, tokenizer, pbar):
     return processed_articles
 
 
-def process_tf_dataset(ds, ds_size, tgt_fname, sentencizer, tokenizer):
-    with tqdm(total=ds_size, desc='Getting wiki40b dataset', mininterval=1) as pbar:
-        for batch in ds.as_numpy_iterator():
+def process_tf_dataset(dataset, dataset_size, tgt_fname, sentencizer, tokenizer):
+    with tqdm(total=dataset_size, desc='Getting wiki40b dataset', mininterval=1) as pbar:
+        for batch in dataset.as_numpy_iterator():
             processed_articles = process_batch(batch, sentencizer, tokenizer, pbar)
             write_txt(tgt_fname, processed_articles)
 
@@ -67,10 +65,13 @@ def get_data(language, raw_data_dir, tgt_fname, batch_size, allow_multilingual=F
 
     for data_split in ['train', 'validation', 'test']:
         # Download the dataset from tensorflow
-        ds, ds_info = tfds.load(f"wiki40b/{language}", split=data_split, data_dir=raw_data_dir,
-                       shuffle_files=False, batch_size=batch_size, with_info=True)
-        ds_size = ds_info.splits[data_split].num_examples
-        process_tf_dataset(ds, ds_size, tgt_fname, sentencizer=sentencizer, tokenizer=tokenizer)
+        dataset, dataset_info = tfds.load(
+            f"wiki40b/{language}", split=data_split, data_dir=raw_data_dir,
+            shuffle_files=False, batch_size=batch_size, with_info=True)
+        dataset_size = dataset_info.splits[data_split].num_examples
+        process_tf_dataset(
+            dataset, dataset_size, tgt_fname,
+            sentencizer=sentencizer, tokenizer=tokenizer)
 
 
 def main():
