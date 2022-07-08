@@ -15,10 +15,10 @@ def get_args():
     parser = argparse.ArgumentParser()
     # Wikipedia
     parser.add_argument(
-        "--wikipedia-raw-file", type=str,
+        "--raw-file", type=str,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
-        "--wikipedia-tokenized-file", type=str,
+        "--tokenized-file", type=str,
         help="The file in which wikipedia tokenized results should be")
     parser.add_argument(
         "--dump-size", type=int, default=1000, required=False,
@@ -114,11 +114,10 @@ def process_article(article, spacy_sentencizer, spacy_tokenizer):
 
 
 def write_txt(fname, data):
-    tqdm.write('Saving dump. Stats: Used %d, Skipped %d' %
-               (USED_ARTICLES, SKIPPED_ARTICLES))
-    with open(fname, 'a') as f:
+    tqdm.write(f'Saving dump. Stats: Used {USED_ARTICLES}, Skipped {SKIPPED_ARTICLES}')
+    with open(fname, 'a', encoding='utf-8') as f:
         for item in data:
-            f.write("%s\n" % item)
+            f.write(f"{item}\n")
 
 
 def get_n_articles(src_fname, max_articles=None):
@@ -168,8 +167,8 @@ def main():
     args = get_args()
     print(args)
 
-    process(args.wikipedia_raw_file, args.wikipedia_tokenized_file, args.language,
-            args.dump_size, args.max_articles, args.allow_multilingual)
+    process(args.raw_file, args.tokenized_file, args.language, args.dump_size,
+            args.max_articles, args.allow_multilingual)
 
 
 if __name__ == '__main__':
