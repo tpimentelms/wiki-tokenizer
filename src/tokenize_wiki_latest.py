@@ -167,8 +167,8 @@ def main():
     args = get_args()
     print(args)
 
-    process(args.wikipedia_raw_file, args.wikipedia_tokenized_file, args.language,
-            args.dump_size, args.max_articles, args.allow_multilingual)
+    process(args.raw_file, args.tokenized_file, args.language, args.dump_size,
+            args.max_articles, args.allow_multilingual)
 
 
 if __name__ == '__main__':
