@@ -9,8 +9,6 @@ IS_WIKI40B := True
 MULTILINGUAL_ARG := $(if $(filter-out $(MULTILINGUAL), False),--allow-multilingual,)
 
 TRUE_STR := True TRUE true
-# WIKI40B_LANGUAGES := en ar zh zh-cn zh-tw nl fr de it ja ko pl pt ru es th tr bg ca cs da el et fa fi he hi hr hu id lt lv ms no ro sk sl sr sv tl uk vi
-# WIKI_NAME := $(if $(filter $(LANGUAGE),$(WIKI40B_LANGUAGES)),wiki40,latest)
 
 INPUT_DIR_LANG := $(INPUT_DIR)/$(LANGUAGE)
 OUTPUT_DIR_LANG := $(OUTPUT_DIR)/$(LANGUAGE)
@@ -18,7 +16,6 @@ OUTPUT_DIR_LANG := $(OUTPUT_DIR)/$(LANGUAGE)
 XML_NAME := $(LANGUAGE)wiki-latest-pages-articles.xml.bz2
 WIKIURL := https://dumps.wikimedia.org/$(LANGUAGE)wiki/latest/$(XML_NAME)
 JSON_NAME := wiki-latest.json.gz
-
 
 # Raw Wiki Data Files
 XML_FILE := $(INPUT_DIR_LANG)/$(XML_NAME)
@@ -45,7 +42,6 @@ get_data: $(JSON_FILE)
 download_raw: $(XML_FILE)
 
 
-
 # Tokenize wiki40b
 $(WIKI40B_FILE):
 	echo "Download data"
@@ -56,7 +52,7 @@ $(WIKI40B_FILE):
 $(WIKI_LATEST_FILE): $(JSON_FILE)
 	echo "Tokenize data"
 	mkdir -p $(OUTPUT_DIR_LANG)
-	python src/tokenize_wiki_latest.py --json-file $(JSON_FILE) --tokenized-file $(WIKI_LATEST_FILE) \
+	python src/tokenize_wiki_latest.py --raw-file $(JSON_FILE) --tokenized-file $(WIKI_LATEST_FILE) \
 		--language $(LANGUAGE) --dump-size $(DUMP_SIZE) $(MULTILINGUAL_ARG)
 
 # Preprocess wikipedia to json
