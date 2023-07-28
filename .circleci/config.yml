@@ -23,7 +23,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1.2-dependencies-{{ checksum "setup.py" }}
+            - v1.0-dependencies-{{ checksum "setup.py" }}
 
       - run:
           name: install dependencies
@@ -41,7 +41,7 @@ jobs:
             fi;
 
       - save_cache:
-          key: v1.2-dependencies-{{ checksum "setup.py" }}
+          key: v1.0-dependencies-{{ checksum "setup.py" }}
           paths:
             - /opt/conda
 
