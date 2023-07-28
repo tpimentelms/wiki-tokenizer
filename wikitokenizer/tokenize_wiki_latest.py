@@ -19,8 +19,8 @@ def get_args():
         "--raw-file", type=str,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
-        "--tokenized-file", type=str,
-        help="The file in which wikipedia tokenized results should be")
+        "--tgt-fname", type=str,
+        help="The directory in which wikipedia tokenized results should be")
     parser.add_argument(
         "--dump-size", type=int, default=1000, required=False,
         help="The number of articles to be processed between each dump")
@@ -169,7 +169,7 @@ def main():
     args = get_args()
     print(args)
 
-    process(args.raw_file, args.tokenized_file, args.language, args.dump_size,
+    process(args.raw_file, args.tgt_fname, args.language, args.dump_size,
             args.max_articles, args.allow_multilingual)
 
 

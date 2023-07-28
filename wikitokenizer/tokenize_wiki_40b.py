@@ -21,7 +21,7 @@ def get_args():
         "--raw-data-dir", type=str,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
-        "--tokenized-file", type=str, required=True,
+        "--tgt-dir", type=str, required=True,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
         "--language", type=str, required=True,
@@ -59,7 +59,7 @@ def process_tf_dataset(dataset, dataset_size, tgt_fname, sentencizer, tokenizer)
             write_txt(tgt_fname, processed_articles)
 
 
-def get_data(language, raw_data_dir, tgt_fname, batch_size, allow_multilingual=False):
+def get_data(language, raw_data_dir, tgt_dir, batch_size, allow_multilingual=False):
     sentencizer = get_sentencizer(language, allow_multilingual)
     tokenizer = get_tokenizer(language, allow_multilingual)
 
@@ -69,6 +69,7 @@ def get_data(language, raw_data_dir, tgt_fname, batch_size, allow_multilingual=F
             f"wiki40b/{language}", split=data_split, data_dir=raw_data_dir,
             shuffle_files=False, batch_size=batch_size, with_info=True)
         dataset_size = dataset_info.splits[data_split].num_examples
+        tgt_fname = f'{tgt_dir}/{data_split}.txt'
         process_tf_dataset(
             dataset, dataset_size, tgt_fname,
             sentencizer=sentencizer, tokenizer=tokenizer)
@@ -79,7 +80,7 @@ def main():
     print(args)
 
     get_data(args.language, raw_data_dir=args.raw_data_dir,
-             tgt_fname=args.tokenized_file, batch_size=args.batch_size)
+             tgt_dir=args.tgt_dir, batch_size=args.batch_size)
 
 
 if __name__ == '__main__':
