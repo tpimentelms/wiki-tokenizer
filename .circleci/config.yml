@@ -23,7 +23,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1.2-dependencies-{{ checksum "environment.yml" }}
+            - v1.2-dependencies-{{ checksum "setup.py" }}
 
       - run:
           name: install dependencies
@@ -33,15 +33,16 @@ jobs:
             if ! [[ $ENVS = *"tokenizer"* ]]; then
               source /opt/conda/etc/profile.d/conda.sh
               conda update -n base -c defaults conda
-              conda env create -f environment.yml
-              conda activate tokenizer
-              conda install pytorch torchvision cpuonly -c pytorch
+              pip install .
+              # conda env create -f setup.py
+              # conda activate tokenizer
+              # conda install pytorch torchvision cpuonly -c pytorch
             else
               echo "Conda env already installed"
             fi;
 
       - save_cache:
-          key: v1.2-dependencies-{{ checksum "environment.yml" }}
+          key: v1.2-dependencies-{{ checksum "setup.py" }}
           paths:
             - /opt/conda
 
