@@ -4,11 +4,18 @@
 
 Code to download and tokenize wikipedia data.
 
-## Install
+### Installation
 
-To install dependencies run:
-```bash
-$ conda env create -f environment.yml
+You can install wikitokenizer directly from PyPI:
+
+`pip install wikitokenizer`
+
+Or from source:
+
+```
+git clone https://github.com/tpimentelms/wikitokenizer.git
+cd wikitokenizer
+pip install --editable .
 ```
 
 #### Dependencies
@@ -23,16 +30,16 @@ Wiki tokenizer has the following main requirements:
 
 To download and tokenize wikipedia data for a specific language in [Wiki40B](https://aclanthology.org/2020.lrec-1.297/):
 ```bash
-$ make LANGUAGE=<wikipedia-language-code>
+$ tokenize_wiki_40b --language <wikipedia_language_code> --tgt-dir <tgt_dir> --break-text-mode <break_text_mode>
 ```
-Where `<wikipedia-language-code>` is the language code in wikipedia for the desired language. To tokenize Afrikaans data, for example, run:
+Where `<wikipedia_language_code>` is the language code in wikipedia for the desired language, `<tgt_dir>` is the directory where data should be saved, and `<break_text_mode>` is either 'document', `paragraph` or `sentence`. This script will then produce a `train.txt`, `validation.txt` and `test.txt` file. To tokenize Finnish data, for example, run:
 ```bash
-$ make LANGUAGE=af
+$ tokenize_wiki_40b --language fi --tgt-dir output/fi/ --break-text-mode document
 ```
 
 To instead download raw dumps directly from Wikipedia, run:
 ```bash
-$ make LANGUAGE=<wikipedia-language-code> IS_WIKI40B=False
+$ tokenize_wiki_latest --language fi --tgt-fname output/fi/wiki.txt
 ```
 
-Finally, to fallback to using multilingual tokenizer / sentencizer models (instead of language specific ones), set `MULTILINGUAL=True` when calling the Makefile.
+Finally, to fallback to using multilingual tokenizer / sentencizer models (instead of language specific ones), pass the flag `--allow-multilingual` when calling these scripts.

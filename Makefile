@@ -46,13 +46,13 @@ download_raw: $(XML_FILE)
 $(WIKI40B_FILE):
 	echo "Download data"
 	mkdir -p $(OUTPUT_DIR_LANG)
-	python src/tokenize_wiki_40b.py --language $(LANGUAGE) --raw-data-dir $(INPUT_DIR_LANG) --tokenized-file $(WIKI40B_FILE)
+	python wikitokenizer/tokenize_wiki_40b.py --language $(LANGUAGE) --raw-data-dir $(INPUT_DIR_LANG) --tokenized-file $(WIKI40B_FILE)
 
 # Tokenize wikipedia latest
 $(WIKI_LATEST_FILE): $(JSON_FILE)
 	echo "Tokenize data"
 	mkdir -p $(OUTPUT_DIR_LANG)
-	python src/tokenize_wiki_latest.py --raw-file $(JSON_FILE) --tokenized-file $(WIKI_LATEST_FILE) \
+	python wikitokenizer/tokenize_wiki_latest.py --raw-file $(JSON_FILE) --tokenized-file $(WIKI_LATEST_FILE) \
 		--language $(LANGUAGE) --dump-size $(DUMP_SIZE) $(MULTILINGUAL_ARG)
 
 # Preprocess wikipedia to json

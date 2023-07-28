@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
+import os
 import json
 import argparse
 import re
 from tqdm import tqdm
 import gensim.utils
 
-from model import Tokenizer, Sentencizer
+from .model import Tokenizer, Sentencizer
 
 SKIPPED_ARTICLES, USED_ARTICLES = 0, 0
 
@@ -18,8 +19,8 @@ def get_args():
         "--raw-file", type=str,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
-        "--tokenized-file", type=str,
-        help="The file in which wikipedia tokenized results should be")
+        "--tgt-fname", type=str,
+        help="The directory in which wikipedia tokenized results should be")
     parser.add_argument(
         "--dump-size", type=int, default=1000, required=False,
         help="The number of articles to be processed between each dump")
@@ -115,6 +116,7 @@ def process_article(article, spacy_sentencizer, spacy_tokenizer):
 
 def write_txt(fname, data):
     tqdm.write(f'Saving dump. Stats: Used {USED_ARTICLES}, Skipped {SKIPPED_ARTICLES}')
+    os.makedirs(os.path.dirname(fname), exist_ok=True)
     with open(fname, 'a', encoding='utf-8') as f:
         for item in data:
             f.write(f"{item}\n")
@@ -167,7 +169,7 @@ def main():
     args = get_args()
     print(args)
 
-    process(args.raw_file, args.tokenized_file, args.language, args.dump_size,
+    process(args.raw_file, args.tgt_fname, args.language, args.dump_size,
             args.max_articles, args.allow_multilingual)
 
 

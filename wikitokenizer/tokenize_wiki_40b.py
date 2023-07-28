@@ -4,14 +4,14 @@ import re
 from tqdm import tqdm
 import tensorflow_datasets as tfds
 
-from tokenize_wiki_latest import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
+from .tokenize_wiki_latest import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
 
 REGEX_1 = "_START_ARTICLE_\n[^_]*"
 REGEX_2 = "_START_PARAGRAPH_\n"
 REGEX_3 = "_START_SECTION_\n[^_]*"
 REGEX_4 = "_NEWLINE_"
 
-ARTICLE_REGEX = re.compile(f"({REGEX_1}|{REGEX_2}|{REGEX_3}|{REGEX_4})")
+ARTICLE_REGEX = re.compile(f"({REGEX_1}|{REGEX_2}|{REGEX_3})")
 
 
 def get_args():
@@ -21,45 +21,62 @@ def get_args():
         "--raw-data-dir", type=str,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
-        "--tokenized-file", type=str,
+        "--tgt-dir", type=str, required=True,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
         "--language", type=str, required=True,
         help="The wikipedia language to get tokenizer.")
+    parser.add_argument(
+        "--break-text-mode", type=str, default='document',
+        choices=['document', 'paragraph', 'sentence'],
+        help="Save text in one line per document, paragraph, or sentence.")
+    parser.add_argument(
+        "--sentencize", action='store_true',
+        help="Save text in one line per sentence, instead of per document.")
     parser.add_argument("--batch-size", type=int, default=1024)
 
     return parser.parse_args()
 
 
-def process_batch(batch, sentencizer, tokenizer, pbar):
+def process_batch(batch, break_text_mode, sentencizer, tokenizer, pbar):
     processed_articles = []
     for item in batch.get("text"):
         text = item.decode("UTF-8")
+        text = re.sub(REGEX_4, " ", text)
         text_clean = re.sub(ARTICLE_REGEX, "\n", text)
         paragraphs = [paragraph for paragraph in text_clean.split('\n') if paragraph.strip() != '']
-        sentences_raw = [
-            sentence
-            for paragraph in paragraphs
-            for sentence in sentencizer(paragraph) if sentence.strip() != ''
-        ]
 
-        token_lists = [tokenize_sentence(tokenizer, sentence) for sentence in sentences_raw]
-        sentences = '\n'.join(' '.join(sentence) for sentence in token_lists)
+        if break_text_mode == 'sentence':
+            utterances_raw = [
+                sentence
+                for paragraph in paragraphs
+                for sentence in sentencizer(paragraph) if sentence.strip() != ''
+            ]
+        elif break_text_mode == 'paragraph':
+            utterances_raw = paragraphs
+        elif break_text_mode == 'document':
+            utterances_raw = [' '.join(paragraphs)]
+        else:
+            raise ValueError(f'Invalid break_text_mode selected {break_text_mode}.')
 
-        processed_articles += [sentences]
+        token_lists = [tokenize_sentence(tokenizer, utterance) for utterance in utterances_raw]
+        utterances = '\n'.join(' '.join(utterance) for utterance in token_lists)
+
+        processed_articles += [utterances]
         pbar.update(1)
 
     return processed_articles
 
 
-def process_tf_dataset(dataset, dataset_size, tgt_fname, sentencizer, tokenizer):
+def process_tf_dataset(dataset, dataset_size, tgt_fname, break_text_mode, sentencizer, tokenizer):
     with tqdm(total=dataset_size, desc='Getting wiki40b dataset', mininterval=1) as pbar:
         for batch in dataset.as_numpy_iterator():
-            processed_articles = process_batch(batch, sentencizer, tokenizer, pbar)
+            processed_articles = process_batch(batch, break_text_mode, sentencizer, tokenizer, pbar)
             write_txt(tgt_fname, processed_articles)
 
 
-def get_data(language, raw_data_dir, tgt_fname, batch_size, allow_multilingual=False):
+def get_data(language, raw_data_dir, tgt_dir, batch_size, break_text_mode,
+             allow_multilingual=False):
     sentencizer = get_sentencizer(language, allow_multilingual)
     tokenizer = get_tokenizer(language, allow_multilingual)
 
@@ -69,8 +86,9 @@ def get_data(language, raw_data_dir, tgt_fname, batch_size, allow_multilingual=F
             f"wiki40b/{language}", split=data_split, data_dir=raw_data_dir,
             shuffle_files=False, batch_size=batch_size, with_info=True)
         dataset_size = dataset_info.splits[data_split].num_examples
+        tgt_fname = f'{tgt_dir}/{data_split}.txt'
         process_tf_dataset(
-            dataset, dataset_size, tgt_fname,
+            dataset, dataset_size, tgt_fname, break_text_mode,
             sentencizer=sentencizer, tokenizer=tokenizer)
 
 
@@ -79,7 +97,8 @@ def main():
     print(args)
 
     get_data(args.language, raw_data_dir=args.raw_data_dir,
-             tgt_fname=args.tokenized_file, batch_size=args.batch_size)
+             tgt_dir=args.tgt_dir, batch_size=args.batch_size,
+             break_text_mode=args.break_text_mode)
 
 
 if __name__ == '__main__':

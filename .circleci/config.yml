@@ -23,7 +23,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1.2-dependencies-{{ checksum "environment.yml" }}
+            - v1.0-dependencies-{{ checksum "setup.py" }}
 
       - run:
           name: install dependencies
@@ -33,15 +33,15 @@ jobs:
             if ! [[ $ENVS = *"tokenizer"* ]]; then
               source /opt/conda/etc/profile.d/conda.sh
               conda update -n base -c defaults conda
-              conda env create -f environment.yml
-              conda activate tokenizer
-              conda install pytorch torchvision cpuonly -c pytorch
+              conda create -n tokenizer python=3.10
+              conda install -y pylint
+              pip install .
             else
               echo "Conda env already installed"
             fi;
 
       - save_cache:
-          key: v1.2-dependencies-{{ checksum "environment.yml" }}
+          key: v1.0-dependencies-{{ checksum "setup.py" }}
           paths:
             - /opt/conda
 
@@ -50,15 +50,7 @@ jobs:
           command: |
             source /opt/conda/etc/profile.d/conda.sh
             conda activate tokenizer
-            pylint src/ --rcfile .pylintrc
-
-      # No tests configured yet
-      # - run:
-      #     name: run tests
-      #     command: |
-      #       source /opt/conda/etc/profile.d/conda.sh
-      #       conda activate tokenizer
-      #       python src/test_circleci.py
+            pylint wikitokenizer/ --rcfile .pylintrc
 
       - store_artifacts:
           path: test-reports
