@@ -33,8 +33,9 @@ jobs:
             if ! [[ $ENVS = *"tokenizer"* ]]; then
               source /opt/conda/etc/profile.d/conda.sh
               conda update -n base -c defaults conda
+              conda create -n tokenizer python=3.10
               pip install .
-              # conda env create -f setup.py
+              # conda env create -f environment.yml
               # conda activate tokenizer
               # conda install pytorch torchvision cpuonly -c pytorch
             else
@@ -50,7 +51,7 @@ jobs:
           name: run linter
           command: |
             source /opt/conda/etc/profile.d/conda.sh
-            conda activate tokenizer
+            # conda activate tokenizer
             pylint src/ --rcfile .pylintrc
 
       # No tests configured yet
