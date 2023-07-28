@@ -27,7 +27,8 @@ def get_args():
         "--language", type=str, required=True,
         help="The wikipedia language to get tokenizer.")
     parser.add_argument(
-        "--break-text-mode", type=str, default='document', choices=['document', 'paragraph', 'sentence'],
+        "--break-text-mode", type=str, default='document',
+        choices=['document', 'paragraph', 'sentence'],
         help="Save text in one line per document, paragraph, or sentence.")
     parser.add_argument(
         "--sentencize", action='store_true',
@@ -74,7 +75,8 @@ def process_tf_dataset(dataset, dataset_size, tgt_fname, break_text_mode, senten
             write_txt(tgt_fname, processed_articles)
 
 
-def get_data(language, raw_data_dir, tgt_dir, batch_size, break_text_mode, allow_multilingual=False):
+def get_data(language, raw_data_dir, tgt_dir, batch_size, break_text_mode,
+             allow_multilingual=False):
     sentencizer = get_sentencizer(language, allow_multilingual)
     tokenizer = get_tokenizer(language, allow_multilingual)
 
