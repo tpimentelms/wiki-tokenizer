@@ -34,6 +34,7 @@ jobs:
               source /opt/conda/etc/profile.d/conda.sh
               conda update -n base -c defaults conda
               conda create -n tokenizer python=3.10
+              conda install -y pylint
               pip install .
               # conda env create -f environment.yml
               # conda activate tokenizer
