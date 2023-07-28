@@ -32,7 +32,7 @@ To download and tokenize wikipedia data for a specific language in [Wiki40B](htt
 ```bash
 $ tokenize_wiki_40b --language <wikipedia_language_code> --tgt-dir <tgt_dir> --break-text-mode <break_text_mode>
 ```
-Where `<wikipedia_language_code>` is the language code in wikipedia for the desired language, `<tgt_dir>` is the directory where data should be saved, and `<break_text_mode>` is either 'document', `paragraph` or `sentence`. This script will then produce a `train.txt`, `val.txt` and `test.txt` file. To tokenize Finnish data, for example, run:
+Where `<wikipedia_language_code>` is the language code in wikipedia for the desired language, `<tgt_dir>` is the directory where data should be saved, and `<break_text_mode>` is either 'document', `paragraph` or `sentence`. This script will then produce a `train.txt`, `validation.txt` and `test.txt` file. To tokenize Finnish data, for example, run:
 ```bash
 $ tokenize_wiki_40b --language fi --tgt-dir output/fi/ --break-text-mode document
 ```
