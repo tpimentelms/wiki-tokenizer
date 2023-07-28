@@ -50,7 +50,7 @@ jobs:
           command: |
             source /opt/conda/etc/profile.d/conda.sh
             conda activate tokenizer
-            pylint src/ --rcfile .pylintrc
+            pylint wikitokenizer/ --rcfile .pylintrc
 
       - store_artifacts:
           path: test-reports
