@@ -13,7 +13,7 @@ setup(name='wikitokenizer',
       author='Tiago Pimentel',
       author_email='tpimentelms@gmail.com',
       license='MIT',
-      packages=['wikitokenizer'],
+      packages=['wikitokenizer', 'wikitokenizer.model'],
       entry_points={
           'console_scripts': [
               'tokenize_wiki_40b=wikitokenizer.tokenize_wiki_40b:main',
