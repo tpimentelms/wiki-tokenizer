@@ -4,7 +4,7 @@ import re
 from tqdm import tqdm
 import tensorflow_datasets as tfds
 
-from tokenize_wiki_latest import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
+from .tokenize_wiki_latest import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
 
 REGEX_1 = "_START_ARTICLE_\n[^_]*"
 REGEX_2 = "_START_PARAGRAPH_\n"
@@ -21,7 +21,7 @@ def get_args():
         "--raw-data-dir", type=str,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
-        "--tokenized-file", type=str,
+        "--tokenized-file", type=str, required=True,
         help="The file containing the wiki json files from which to read")
     parser.add_argument(
         "--language", type=str, required=True,

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
+import os
 import json
 import argparse
 import re
 from tqdm import tqdm
 import gensim.utils
 
-from model import Tokenizer, Sentencizer
+from .model import Tokenizer, Sentencizer
 
 SKIPPED_ARTICLES, USED_ARTICLES = 0, 0
 
@@ -115,6 +116,7 @@ def process_article(article, spacy_sentencizer, spacy_tokenizer):
 
 def write_txt(fname, data):
     tqdm.write(f'Saving dump. Stats: Used {USED_ARTICLES}, Skipped {SKIPPED_ARTICLES}')
+    os.makedirs(os.path.dirname(fname), exist_ok=True)
     with open(fname, 'a', encoding='utf-8') as f:
         for item in data:
             f.write(f"{item}\n")
