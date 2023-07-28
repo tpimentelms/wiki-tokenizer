@@ -51,7 +51,7 @@ jobs:
           name: run linter
           command: |
             source /opt/conda/etc/profile.d/conda.sh
-            # conda activate tokenizer
+            conda activate tokenizer
             pylint src/ --rcfile .pylintrc
 
       # No tests configured yet
