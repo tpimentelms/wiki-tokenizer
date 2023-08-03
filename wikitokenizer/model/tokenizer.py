@@ -11,18 +11,18 @@ class Tokenizer(SpacyBase):
     def __call__(self, *args, **kwargs):
         try:
             return self.tokenizer(*args, **kwargs)
-        except Exception as ex:
+        except Exception as error:
             in_string = args[0]
             if self.language == 'ja' and self.size_in_bits(in_string) > 49149:
                 tokens = in_string.split()
                 n_tokens = int(len(tokens) / 2)
 
-                first_half = [x for x in self(' '.join(tokens[:n_tokens]))]
-                second_half = [x for x in self(' '.join(tokens[n_tokens:]))]
+                first_half = list(self(' '.join(tokens[:n_tokens])))
+                second_half = list(self(' '.join(tokens[n_tokens:])))
                 return first_half + second_half
 
-            raise ex
+            raise error
 
     @staticmethod
-    def size_in_bits(s):
-        return len(s.encode('utf-8'))
+    def size_in_bits(string):
+        return len(string.encode('utf-8'))
