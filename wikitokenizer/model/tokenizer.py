@@ -19,6 +19,9 @@ class Tokenizer(SpacyBase):
 
                 first_half = list(self(' '.join(tokens[:n_tokens])))
                 second_half = list(self(' '.join(tokens[n_tokens:])))
+
+                # Reinitialise Japanese tokenizer to avoid memory leak issue
+                self.get_model(self.language)
                 return first_half + second_half
 
             raise error
