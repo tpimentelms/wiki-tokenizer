@@ -4,17 +4,17 @@ channels:
   - conda-forge
 dependencies:
   - python = 3.10
-  - spacy >= 2.2
-  - gensim
-  - tqdm
-  - jieba
-  - pymorphy2
+  # - spacy >= 2.2
+  # - gensim
+  # - tqdm
+  # - jieba
+  # - pymorphy2
   - pylint >= 2.14.4
   - pip
-  - pip:
-    - pymorphy2-dicts
-    - pythainlp
-    - pyvi
-    - mecab-python3
-    - tensorflow
-    - tensorflow_datasets
+  # - pip:
+  #   - pymorphy2-dicts
+  #   - pythainlp
+  #   - pyvi
+  #   - mecab-python3
+  #   - tensorflow
+  #   - tensorflow_datasets
