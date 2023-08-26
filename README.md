@@ -42,4 +42,9 @@ To instead download raw dumps directly from Wikipedia, run:
 $ tokenize_wiki_latest --language fi --tgt-fname output/fi/wiki.txt
 ```
 
+To tokenize a previously downloaded file, run:
+```bash
+$ tokenize_wiki_file --language fi --src-fname <src_fname> --tgt-fname output/fi/wiki.txt
+```
+
 Finally, to fallback to using multilingual tokenizer / sentencizer models (instead of language specific ones), pass the flag `--allow-multilingual` when calling these scripts.
