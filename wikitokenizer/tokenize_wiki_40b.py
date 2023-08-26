@@ -4,7 +4,7 @@ import re
 from tqdm import tqdm
 import tensorflow_datasets as tfds
 
-from .tokenize_wiki_latest import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
+from .util import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
 
 REGEX_1 = "_START_ARTICLE_\n[^_]*"
 REGEX_2 = "_START_PARAGRAPH_\n"
@@ -30,9 +30,6 @@ def get_args():
         "--break-text-mode", type=str, default='document',
         choices=['document', 'paragraph', 'sentence'],
         help="Save text in one line per document, paragraph, or sentence.")
-    parser.add_argument(
-        "--sentencize", action='store_true',
-        help="Save text in one line per sentence, instead of per document.")
     parser.add_argument("--batch-size", type=int, default=1024)
 
     return parser.parse_args()
