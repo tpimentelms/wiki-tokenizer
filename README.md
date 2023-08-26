@@ -4,7 +4,7 @@
 
 Code to download and tokenize wikipedia data.
 
-### Installation
+### Install
 
 You can install wikitokenizer directly from PyPI:
 
@@ -12,7 +12,7 @@ You can install wikitokenizer directly from PyPI:
 
 Or from source:
 
-```
+```bash
 git clone https://github.com/tpimentelms/wikitokenizer.git
 cd wikitokenizer
 pip install --editable .
@@ -48,3 +48,14 @@ $ tokenize_wiki_file --language fi --src-fname <src_fname> --tgt-fname output/fi
 ```
 
 Finally, to fallback to using multilingual tokenizer / sentencizer models (instead of language specific ones), pass the flag `--allow-multilingual` when calling these scripts.
+
+### Development setup
+
+Create a conda enviroment:
+```bash
+$ conda env create -f scripts/environment.yml
+```
+Then install the lib in editable mode:
+```bash
+$ pip install --editable .
+```
