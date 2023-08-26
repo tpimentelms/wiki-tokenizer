@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
-import os
 import json
 import argparse
 import re
 from tqdm import tqdm
 import gensim.utils
 
-from .util import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt, SKIPPED_ARTICLES, USED_ARTICLES
+from .model import Sentencizer
+from .util import get_tokenizer, get_sentencizer, tokenize_sentence, \
+    write_txt, SKIPPED_ARTICLES, USED_ARTICLES
 
 
 def get_args():
@@ -53,6 +54,39 @@ def process_sentences(sentences, spacy_tokenizer):
 
     SKIPPED_ARTICLES += 1
     return None
+
+
+def remove_regex(regex, sections):
+    return [
+        re.sub(regex, '\n', section)
+        for section in sections
+    ]
+
+
+def remove_lists(sections):
+    return remove_regex(r'(?m)^\* .+\n?', sections)
+
+
+def remove_headers(sections):
+    return remove_regex(r'(?m)^===.+===\n?', sections)
+
+
+def get_paragraphs(sections):
+    sections = remove_lists(sections)
+    sections = remove_headers(sections)
+    paragraphs = [paragraph
+                  for section in sections
+                  for paragraph in list(filter(None, section.split('\n\n')))
+                  if paragraph.strip() != '']
+    paragraphs = [x.replace('\'', '').replace('\n', ' ') for x in paragraphs]
+    return [x for x in paragraphs if x.strip() != '' and len(x) < Sentencizer.MAX_LEN]
+
+
+def get_sentences(article, spacy_sentencizer):
+    sections = article.get('section_texts')
+    paragraphs = get_paragraphs(sections)
+    sentences = [sentence for x in paragraphs for sentence in spacy_sentencizer(x)]
+    return [x for x in sentences if x.strip() != '']
 
 
 def process_article(article, spacy_sentencizer, spacy_tokenizer):

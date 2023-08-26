@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import argparse
-import re
 from tqdm import tqdm
 
 from .util import get_tokenizer, get_sentencizer, tokenize_sentence, write_txt
@@ -37,7 +36,7 @@ def process_batch(batch, break_text_mode, sentencizer, tokenizer, pbar):
                 sentence
                 for sentence in sentencizer(paragraph) if sentence.strip() != ''
             ]
-        elif break_text_mode == 'paragraph' or break_text_mode == 'document':
+        elif break_text_mode in {'paragraph', 'document'}:
             utterances_raw = [paragraph]
         else:
             raise ValueError(f'Invalid break_text_mode selected {break_text_mode}.')
@@ -65,14 +64,15 @@ def batch_file_lines(f, batch_size):
 
 def process_file(src_fname, tgt_fname, batch_size, break_text_mode,
                  sentencizer, tokenizer):
-    with open(src_fname, 'r') as f:
+    with open(src_fname, 'r', encoding='utf-8') as f:
         with tqdm(desc='Tokenizing file', mininterval=1) as pbar:
             for batch in batch_file_lines(f, batch_size):
-                processed_articles = process_batch(batch, break_text_mode, sentencizer, tokenizer, pbar)
+                processed_articles = process_batch(
+                    batch, break_text_mode, sentencizer, tokenizer, pbar)
                 write_txt(tgt_fname, processed_articles)
 
 
-def tokenize_data(language, src_fname, tgt_fname, batch_size, break_text_mode, 
+def tokenize_data(language, src_fname, tgt_fname, batch_size, break_text_mode,
                   allow_multilingual=False):
     sentencizer = get_sentencizer(language, allow_multilingual)
     tokenizer = get_tokenizer(language, allow_multilingual)
