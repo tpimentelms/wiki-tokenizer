@@ -18,6 +18,7 @@ setup(name='wikitokenizer',
           'console_scripts': [
               'tokenize_wiki_40b=wikitokenizer.tokenize_wiki_40b:main',
               'tokenize_wiki_latest=wikitokenizer.tokenize_wiki_latest:main',
+              'tokenize_wiki_file=wikitokenizer.tokenize_wiki_file:main',
           ],
       },
       install_requires=[

@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 # Process Wikipedia to tokens, tailored to wikipedia-extractor.py dump output
-import os
 import json
 import argparse
 import re
 from tqdm import tqdm
 import gensim.utils
 
-from .model import Tokenizer, Sentencizer
-
-SKIPPED_ARTICLES, USED_ARTICLES = 0, 0
+from .model import Sentencizer
+from .util import get_tokenizer, get_sentencizer, tokenize_sentence, \
+    write_txt, SKIPPED_ARTICLES, USED_ARTICLES
 
 
 def get_args():
@@ -39,16 +38,22 @@ def get_args():
     return parser.parse_args()
 
 
-def get_sentencizer(language, allow_multilingual=False):
-    print("Loading sentencizer")
-    sentencizer = Sentencizer(language, allow_multilingual)
-    return sentencizer
+def process_sentences(sentences, spacy_tokenizer):
+    # pylint: disable=global-statement
+    global SKIPPED_ARTICLES, USED_ARTICLES
 
+    parsed_sentences = []
+    for sentence in sentences:
+        target_tokens = tokenize_sentence(spacy_tokenizer, sentence)
+        if len(target_tokens) > 1:
+            parsed_sentences += [' '.join(target_tokens)]
 
-def get_tokenizer(language, allow_multilingual=False):
-    print("Loading tokenizer")
-    tokenizer = Tokenizer(language, allow_multilingual)
-    return tokenizer
+    if len(parsed_sentences) > 10:
+        USED_ARTICLES += 1
+        return '\n'.join(parsed_sentences)
+
+    SKIPPED_ARTICLES += 1
+    return None
 
 
 def remove_regex(regex, sections):
@@ -84,42 +89,11 @@ def get_sentences(article, spacy_sentencizer):
     return [x for x in sentences if x.strip() != '']
 
 
-def tokenize_sentence(spacy_tokenizer, sentence):
-    tokens = [x.text for x in spacy_tokenizer(sentence.strip())]
-    return [x for x in tokens if x.strip() != '']
-
-
-def process_sentences(sentences, spacy_tokenizer):
-    # pylint: disable=global-statement
-    global SKIPPED_ARTICLES, USED_ARTICLES
-
-    parsed_sentences = []
-    for sentence in sentences:
-        target_tokens = tokenize_sentence(spacy_tokenizer, sentence)
-        if len(target_tokens) > 1:
-            parsed_sentences += [' '.join(target_tokens)]
-
-    if len(parsed_sentences) > 10:
-        USED_ARTICLES += 1
-        return '\n'.join(parsed_sentences)
-
-    SKIPPED_ARTICLES += 1
-    return None
-
-
 def process_article(article, spacy_sentencizer, spacy_tokenizer):
     article = json.loads(article)
     sentences = get_sentences(article, spacy_sentencizer)
     parsed = process_sentences(sentences, spacy_tokenizer)
     return parsed
-
-
-def write_txt(fname, data):
-    tqdm.write(f'Saving dump. Stats: Used {USED_ARTICLES}, Skipped {SKIPPED_ARTICLES}')
-    os.makedirs(os.path.dirname(fname), exist_ok=True)
-    with open(fname, 'a', encoding='utf-8') as f:
-        for item in data:
-            f.write(f"{item}\n")
 
 
 def get_n_articles(src_fname, max_articles=None):
