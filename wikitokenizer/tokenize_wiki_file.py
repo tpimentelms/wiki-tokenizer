@@ -21,6 +21,9 @@ def get_args():
         "--break-text-mode", type=str, default='document',
         choices=['document', 'paragraph', 'sentence'],
         help="Save text in one line per document, paragraph, or sentence.")
+    parser.add_argument(
+         "--dont-tokenize", action='store_true',
+         help="Save data without tokenising the text.")
     parser.add_argument("--batch-size", type=int, default=1024)
 
     return parser.parse_args()
@@ -73,9 +76,9 @@ def process_file(src_fname, tgt_fname, batch_size, break_text_mode,
 
 
 def tokenize_data(language, src_fname, tgt_fname, batch_size, break_text_mode,
-                  allow_multilingual=False):
+                  allow_multilingual=False, dont_tokenize=False):
     sentencizer = get_sentencizer(language, allow_multilingual)
-    tokenizer = get_tokenizer(language, allow_multilingual)
+    tokenizer = None if dont_tokenize else get_tokenizer(language, allow_multilingual)
 
     process_file(src_fname, tgt_fname, batch_size, break_text_mode,
                  sentencizer=sentencizer, tokenizer=tokenizer)
@@ -86,7 +89,8 @@ def main():
     print(args)
 
     tokenize_data(args.language, src_fname=args.src_fname, tgt_fname=args.tgt_fname,
-                  batch_size=args.batch_size, break_text_mode=args.break_text_mode)
+                  batch_size=args.batch_size, break_text_mode=args.break_text_mode,
+                  dont_tokenize=args.dont_tokenize)
 
 
 if __name__ == '__main__':
