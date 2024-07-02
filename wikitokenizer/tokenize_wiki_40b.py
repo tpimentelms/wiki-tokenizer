@@ -30,6 +30,9 @@ def get_args():
         "--break-text-mode", type=str, default='document',
         choices=['document', 'paragraph', 'sentence'],
         help="Save text in one line per document, paragraph, or sentence.")
+    parser.add_argument(
+         "--dont-tokenize", action='store_true',
+         help="Save data without tokenising the text.")
     parser.add_argument("--batch-size", type=int, default=1024)
 
     return parser.parse_args()
@@ -73,9 +76,9 @@ def process_tf_dataset(dataset, dataset_size, tgt_fname, break_text_mode, senten
 
 
 def get_data(language, raw_data_dir, tgt_dir, batch_size, break_text_mode,
-             allow_multilingual=False):
+             allow_multilingual=False, dont_tokenize=False):
     sentencizer = get_sentencizer(language, allow_multilingual)
-    tokenizer = get_tokenizer(language, allow_multilingual)
+    tokenizer = None if dont_tokenize else get_tokenizer(language, allow_multilingual)
 
     for data_split in ['train', 'validation', 'test']:
         # Download the dataset from tensorflow
@@ -95,7 +98,8 @@ def main():
 
     get_data(args.language, raw_data_dir=args.raw_data_dir,
              tgt_dir=args.tgt_dir, batch_size=args.batch_size,
-             break_text_mode=args.break_text_mode)
+             break_text_mode=args.break_text_mode,
+             dont_tokenize=args.dont_tokenize)
 
 
 if __name__ == '__main__':

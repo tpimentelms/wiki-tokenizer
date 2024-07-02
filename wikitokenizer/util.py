@@ -21,7 +21,11 @@ def get_tokenizer(language, allow_multilingual=False):
 
 
 def tokenize_sentence(spacy_tokenizer, sentence):
-    tokens = [x.text for x in spacy_tokenizer(sentence.strip())]
+    if spacy_tokenizer:
+        tokens = [x.text for x in spacy_tokenizer(sentence.strip())]
+    else:
+        tokens = sentence.strip().split()
+
     return [x for x in tokens if x.strip() != '']
 
 
