@@ -37,11 +37,6 @@ Where `<wikipedia_language_code>` is the language code in wikipedia for the desi
 $ tokenize_wiki_40b --language fi --tgt-dir output/fi/ --break-text-mode document
 ```
 
-To instead download raw dumps directly from Wikipedia, run:
-```bash
-$ tokenize_wiki_latest --language fi --tgt-fname output/fi/wiki.txt
-```
-
 To tokenize a previously downloaded file, run:
 ```bash
 $ tokenize_wiki_file --language fi --src-fname <src_fname> --tgt-fname output/fi/wiki.txt
@@ -53,7 +48,7 @@ Finally, to fallback to using multilingual tokenizer / sentencizer models (inste
 
 Create a conda enviroment:
 ```bash
-$ conda env create -f scripts/environment.yml
+$ conda env create -f environment.yml
 ```
 Then install the lib in editable mode:
 ```bash
